@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-categories">
+         {% for category in categories %}
+         <b>{{category.name}}</b>
+         </br>
+         {% endfor %}
+    </div>
+    <div class="col-items">
+        {% for item in items %}
+         <a href="{{ url_for('showItem', item_id=item.id) }}">{{item.name}} ({{item.category.name}})</a>
+         </br>
+         {% endfor %}
+    </div>
+<div>
+{% endblock %}
