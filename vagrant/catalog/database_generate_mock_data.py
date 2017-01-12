@@ -1,4 +1,4 @@
-#This script is used to populate the DB with categories for testing purposes
+# This script is used to populate the DB with categories for testing purposes
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -10,7 +10,7 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-#Create mock categories
+# Create mock categories
 category1 = Category(name="Clothing")
 session.add(category1)
 session.commit()
@@ -26,4 +26,3 @@ session.commit()
 category1 = Category(name="Electronics")
 session.add(category1)
 session.commit()
-
