@@ -14,9 +14,10 @@ import json
 
 app = Flask(__name__)
 
-# Retrieve CLIENT ID and APPLICATION_NAME
+# Retrieve CLIENT ID from client_secrets
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
+# Define application name , needed for QAuth authentication
 APPLICATION_NAME = "Catalog Application"
 
 # Connect to Database and create database session
@@ -35,7 +36,7 @@ def loginPage():
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
-# Create user in local User DB using corresponding third party account information
+# Create user in User DB using corresponding third party account information
 
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session[
@@ -44,11 +45,7 @@ def createUser(login_session):
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()
     return user.id
-
-def getUserInfo(user_id):
-    user = session.query(User).filter_by(id=user_id).one()
-    return user
-
+# Helper method to get current user email address
 def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
@@ -56,10 +53,12 @@ def getUserID(email):
     except:
         return None
 
+# Display flash message
 def flash_message(message):
     login_session.pop('_flashes', None)
     flash(message)
 
+# main page
 @app.route('/')
 @app.route('/catalog')
 def catalog():
@@ -67,24 +66,28 @@ def catalog():
     items = session.query(CategoryItem).order_by(asc(CategoryItem.name))
     return render_template('catalog.html',categories=categories,items=items)
 
+# main page in JSON format
 @app.route('/catalog/JSON')
 def catalogJSON():
     categories = session.query(Category).order_by(asc(Category.name))
     items = session.query(CategoryItem).order_by(asc(CategoryItem.name))
     return jsonify(categories=[category.serialize for category in categories] , items = [item.serialize for item in items])
 
+# Display items for a given category
 @app.route('/catalog/category/<int:category_id>')
 def category(category_id):
     categories = session.query(Category).filter_by(id=category_id).order_by(asc(Category.name))
     items = session.query(CategoryItem).filter_by(category_id=category_id).order_by(asc(CategoryItem.name))
     return render_template('catalog.html',categories=categories,items=items)
 
+# Display items for a given category in JSON
 @app.route('/catalog/category/<int:category_id>/JSON')
 def categoryJSON(category_id):
     categories = session.query(Category).filter_by(id=category_id).order_by(asc(Category.name))
     items = session.query(CategoryItem).filter_by(category_id=category_id).order_by(asc(CategoryItem.name))
     return jsonify(categories=[category.serialize for category in categories] , items = [item.serialize for item in items])
 
+# Create new item
 @app.route('/catalog/newitem',methods=['GET', 'POST'])
 def newItem():
     if 'username' not in login_session:
@@ -101,6 +104,7 @@ def newItem():
         categories = session.query(Category).order_by(asc(Category.name))
         return render_template('newItem.html',categories=categories)
 
+# Edit existing item
 @app.route('/catalog/edititem/<int:item_id>', methods=['GET', 'POST'])
 def editItem(item_id):
 
@@ -122,7 +126,7 @@ def editItem(item_id):
         else:
             categories = session.query(Category).order_by(asc(Category.name))
             return render_template('editItem.html',categories=categories,item=currentItem)
-
+# Delete item
 @app.route('/catalog/deleteitem/<int:item_id>', methods=['GET'])
 def deleteItem(item_id):
     print "Login session"
@@ -140,16 +144,19 @@ def deleteItem(item_id):
         session.commit()
         return redirect(url_for('catalog'))
 
+# Show details about particular item
 @app.route('/catalog/showitem/<int:item_id>', methods=['GET'])
 def showItem(item_id):
         currentItem = session.query(CategoryItem).filter_by(id=item_id).one()
         return render_template('showItem.html',item=currentItem)
 
+# Show details about particular item in JSON
 @app.route('/catalog/showitem/<int:item_id>/JSON', methods=['GET'])
 def showItemJSON(item_id):
         currentItem = session.query(CategoryItem).filter_by(id=item_id).one()
         return jsonify(item=currentItem.serialize)
 
+# Login via google . Add user to local DB if authentication is a success
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
 
@@ -179,11 +186,13 @@ def gconnect():
            % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
+
     # If there was an error in the access token info, abort.
     if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
         return response
+
     # Verify that the access token is used for the intended user.
     gplus_id = credentials.id_token['sub']
     if result['user_id'] != gplus_id:
@@ -225,7 +234,7 @@ def gconnect():
     login_session['email'] = data['email']
     login_session['provider'] = 'google'
 
-    # see if user exists, if it doesn't make a new one
+    # see if user exists, make new user if it doesnt
     user_id = getUserID(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
@@ -238,10 +247,11 @@ def gconnect():
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
+    flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
+#Logout
 @app.route('/logout')
 def logout():
     # Only disconnect a connected user.
@@ -271,6 +281,7 @@ def logout():
     return redirect(url_for('catalog'))
 
 if __name__ == '__main__':
+    # Secret key to encrypt session variables
     app.secret_key = 'california'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)

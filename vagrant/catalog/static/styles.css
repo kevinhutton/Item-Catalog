@@ -41,11 +41,9 @@
 	border: ridge;
 	margin-right: 10px;
 	font-weight: bold;
-
-
  }
  .flash-message {
-   color: red;
+   font-color: red;
  }
  .item-name {
  	font-weight: bold;

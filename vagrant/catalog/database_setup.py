@@ -1,4 +1,4 @@
-# Import sqlalchemy packages for DB interaction
+#This script is used to populate the DB for the Catalog application
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
