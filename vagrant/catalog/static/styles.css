@@ -1,39 +1,35 @@
 * {
-	font-family: "Helvetica Neue Bold", Roboto, Helvetica, Arial, sans-serif;
+	font-family: "Palatino Linotype";
 	font-weight: 1000;
+	padding:5px;
+	margin-bottom: 5px;
 }
 
 .row {
 	width: 100%;
-	padding: 5px;
 }
 .col-categories {
 	width: 50%;
-	padding: 5px;
 	display: inline-block;
 	float: left;
-	border: solid;
 
 }
 .col-items {
 	width: 50%;
-	padding: 5px;
 	display: inline-block;
-	border: solid;
 
 }
 .col-title {
-	width: 100%;
 	background-color: #98FB98;
 	display: inline-block;
-	float: left;
+	float: center;
+	width: 100%;
 
 }
 .col-authentication-menu {
 	width: 100%;
-	padding: 3px;
 	display: inline-block;
-	float: left;
+	float: right;
 
 }
 .container {
@@ -42,5 +38,18 @@
 	width: 100%;
  }
 .button {
-	padding: 5px;
+	border: ridge;
+	margin-right: 10px;
+	font-weight: bold;
+
+
  }
+ .flash-message {
+   color: red;
+ }
+ .item-name {
+ 	font-weight: bold;
+ }
+ .item-description {
+ 	font-style: italic;
+  }

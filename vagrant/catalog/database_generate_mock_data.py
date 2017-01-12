@@ -19,60 +19,21 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-# Create dummy user
-User1 = User(name="Kevin Hutton", email="kevin@nowhere.com")
-session.add(User1)
-session.commit()
 
 # Create Category
 category1 = Category(name="Clothing")
 session.add(category1)
 session.commit()
 
-categoryItem1 = CategoryItem(name="Quicksilver T-Shirt", description="Quicksilver T-Shirt",
-                     category=category1)
-session.add(categoryItem1)
+category1 = Category(name="Cars")
+session.add(category1)
 session.commit()
 
-categoryItem1 = CategoryItem(name="Billabong T-Shirt", description="Billabong T-Shirt",
-                     category=category1)
-session.add(categoryItem1)
+category1 = Category(name="Sports Equipment")
+session.add(category1)
 session.commit()
 
-categoryItem1 = CategoryItem(name="Rusty T-Shirt", description="Rusty T-Shirt",
-                     category=category1)
-session.add(categoryItem1)
+category1 = Category(name="Electronics")
+session.add(category1)
 session.commit()
 
-categoryItem1 = CategoryItem(name="Addias T-Shirt", description="Addias T-Shirt",
-                     category=category1)
-session.add(categoryItem1)
-session.commit()
-
-categoryItem1 = CategoryItem(name="Oneill T-Shirt", description="Oneill T-Shirt",
-                     category=category1)
-session.add(categoryItem1)
-session.commit()
-
-category2 = Category(name="Sports Equipment")
-session.add(category2)
-session.commit()
-
-categoryItem1 = CategoryItem(name="Forum Snowboard", description="Forum Snowboard",
-                     category=category2)
-session.add(categoryItem1)
-session.commit()
-
-categoryItem1 = CategoryItem(name="Channel Islands Surfboard", description="Channel Islands Surfboard",
-                     category=category2)
-session.add(categoryItem1)
-session.commit
-ategoryItem1 = CategoryItem(name="Forum Snowboard", description="Forum Snowboard",
-                     category=category2)
-session.add(categoryItem1)
-session.commit()
-
-categoryItem1 = CategoryItem(name="SUP Board", description="SUP Board",
-                     category=category2)
-session.add(categoryItem1)
-session.commit()

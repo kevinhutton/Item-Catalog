@@ -91,14 +91,11 @@ def newItem():
         flash_message("You must be logged in to create a new item , please login above")
         return redirect(url_for('loginPage'))
     if request.method == 'POST':
-        print "Post !"
-        print request.form
         corresponding_category = session.query(Category).filter_by(name=request.form['category_select']).one()
         newItem = CategoryItem(name=request.form['name'], description=request.form['description'],
-                     category=corresponding_category)
+                     category=corresponding_category,user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
-
         return redirect(url_for('catalog'))
     else:
         categories = session.query(Category).order_by(asc(Category.name))
@@ -111,7 +108,7 @@ def editItem(item_id):
     if 'username' not in login_session:
         flash_message("You must be logged in to create edit this item , please login")
         return redirect(url_for('loginPage'))
-    elif login_session['username'] != currentItem.user.username :
+    elif login_session['user_id'] != currentItem.user_id :
         flash_message("You don't have permissions to edit this item, please login using correct credentials")
         return redirect(url_for('loginPage'))
     else:
@@ -128,13 +125,14 @@ def editItem(item_id):
 
 @app.route('/catalog/deleteitem/<int:item_id>', methods=['GET'])
 def deleteItem(item_id):
-    print login_session
-    item = session.query(CategoryItem).one()[0]
-    print "The item is %s" % str(item)
+    print "Login session"
+    print  login_session
+    item = session.query(CategoryItem).filter_by(id=item_id).one()
+    print "The item is %s" % str(vars(item))
     if 'username' not in login_session:
         flash_message("You must be logged in to create edit this item , please login")
         return redirect(url_for('loginPage'))
-    elif login_session['username'] != item.user.username :
+    elif login_session['user_id'] != item.user_id :
         flash_message("You don't have permissions to edit this item, please login using correct credentials")
         return redirect(url_for('loginPage'))
     else:
