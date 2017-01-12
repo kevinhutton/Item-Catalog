@@ -1,6 +1,6 @@
 # Udacity Fullstack Nanodegree Project 5 - Item Catalog
 
-The purpose of this project was to create a python web application which displays items 
+The purpose of this project was to create a python web application which displays items in a catalog
 
 This application demonstrates the following tools/technologies:
 
