@@ -16,7 +16,7 @@ This project was done as part of the Udacity Fullstack Nanodegree program
 ###Required Libraries and Dependencies
 1. vagrant
 2. python
-3. Google OAuth2 Web Application API Credentials and corresponding client_secrets.json file
+3. Google OAuth2 Web Application API Credentials and corresponding client_secrets.json file<br>
     Please see : https://developers.google.com/identity/protocols/OAuth2
 4. Google account
 
@@ -30,5 +30,5 @@ This project was done as part of the Udacity Fullstack Nanodegree program
 6. Navigate to "catalog" folder: <br> ``` vagrant@vagrant-ubuntu-trusty-32:~$ cd /vagrant/catalog/ ```
 7. Create database and tables: <br> ``` vagrant@vagrant-ubuntu-trusty-32:/vagrant/catalog$ python database_setup.py ```
 8. Populate database with mock categories: <br> ``` vagrant@vagrant-ubuntu-trusty-32:/vagrant/catalog$ python database_generate_mock_data.py ```
-9. Run application: <br> ``` vagrant@vagrant-ubuntu-trusty-32:/vagrant/catalog$ python project.py ``` <br>
+9. Run application: <br> ``` vagrant@vagrant-ubuntu-trusty-32:/vagrant/catalog$ python project.py ```<br>
    This will launch the application on http://localhost:5000
