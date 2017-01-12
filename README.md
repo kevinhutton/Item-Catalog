@@ -24,7 +24,7 @@ This project was done as part of the Udacity Fullstack Nanodegree program
 
 1. Retrieve workspace: <br> ``` git clone https://github.com/kevinhutton/Udacity-Fullstack-Nanodegree-Project5.git ```
 2. Navigate to "vagrant" folder: <br> ``` cd Udacity-Fullstack-Nanodegree-Project4/vagrant ```
-3. Copy your client_secret.json file to within this folder (E.g. the vagrant folder)
+3. Copy your client_secrets.json file to within this folder (E.g. the vagrant folder)
 4. Start vagrant VM: <br> ``` vagrant up ```
 5. Log onto VM: <br> ``` vagrant ssh ```
 6. Navigate to "catalog" folder: <br> ``` vagrant@vagrant-ubuntu-trusty-32:~$ cd /vagrant/catalog/ ```
