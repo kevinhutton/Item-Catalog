@@ -17,8 +17,9 @@ This project was done as part of the Udacity Fullstack Nanodegree program
 1. vagrant
 2. python
 3. Google OAuth2 Web Application API Credentials and corresponding client_secrets.json file
-    Please see : https://developers.google.com/identity/protocols/OAuth2<br>
+    Please see : https://developers.google.com/identity/protocols/OAuth2
 4. Google account
+
 ###How to Run Project
 
 1. Retrieve workspace: <br> ``` git clone https://github.com/kevinhutton/Udacity-Fullstack-Nanodegree-Project5.git ```
