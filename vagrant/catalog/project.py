@@ -17,6 +17,7 @@ app = Flask(__name__)
 # Retrieve CLIENT ID from client_secrets
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
+
 # Define application name , needed for QAuth authentication
 APPLICATION_NAME = "Catalog Application"
 
@@ -28,6 +29,7 @@ session = DBSession()
 
 # Create anti-forgery state token
 
+
 @app.route('/login')
 def loginPage():
     print "he"
@@ -38,6 +40,7 @@ def loginPage():
 
 # Create user in User DB using corresponding third party account information
 
+
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
@@ -46,6 +49,8 @@ def createUser(login_session):
     user = session.query(User).filter_by(email=login_session['email']).one()
     return user.id
 # Helper method to get current user email address
+
+
 def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
@@ -54,90 +59,117 @@ def getUserID(email):
         return None
 
 # Display flash message
+
+
 def flash_message(message):
     login_session.pop('_flashes', None)
     flash(message)
 
 # main page
+
+
 @app.route('/')
 @app.route('/catalog')
 def catalog():
     categories = session.query(Category).order_by(asc(Category.name))
     items = session.query(CategoryItem).order_by(asc(CategoryItem.name))
-    return render_template('catalog.html',categories=categories,items=items)
+    return render_template('catalog.html', categories=categories, items=items)
 
 # main page in JSON format
+
+
 @app.route('/catalog/JSON')
 def catalogJSON():
     categories = session.query(Category).order_by(asc(Category.name))
     items = session.query(CategoryItem).order_by(asc(CategoryItem.name))
-    return jsonify(categories=[category.serialize for category in categories] , items = [item.serialize for item in items])
+    return jsonify(categories=[category.serialize for category in categories], items=[item.serialize for item in items])
 
 # Display items for a given category
+
+
 @app.route('/catalog/category/<int:category_id>')
 def category(category_id):
-    categories = session.query(Category).filter_by(id=category_id).order_by(asc(Category.name))
-    items = session.query(CategoryItem).filter_by(category_id=category_id).order_by(asc(CategoryItem.name))
-    return render_template('catalog.html',categories=categories,items=items)
+    categories = session.query(Category).filter_by(
+        id=category_id).order_by(asc(Category.name))
+    items = session.query(CategoryItem).filter_by(
+        category_id=category_id).order_by(asc(CategoryItem.name))
+    return render_template('catalog.html', categories=categories, items=items)
 
 # Display items for a given category in JSON
+
+
 @app.route('/catalog/category/<int:category_id>/JSON')
 def categoryJSON(category_id):
-    categories = session.query(Category).filter_by(id=category_id).order_by(asc(Category.name))
-    items = session.query(CategoryItem).filter_by(category_id=category_id).order_by(asc(CategoryItem.name))
-    return jsonify(categories=[category.serialize for category in categories] , items = [item.serialize for item in items])
+    categories = session.query(Category).filter_by(
+        id=category_id).order_by(asc(Category.name))
+    items = session.query(CategoryItem).filter_by(
+        category_id=category_id).order_by(asc(CategoryItem.name))
+    return jsonify(categories=[category.serialize for category in categories], items=[item.serialize for item in items])
 
 # Create new item
-@app.route('/catalog/newitem',methods=['GET', 'POST'])
+
+
+@app.route('/catalog/newitem', methods=['GET', 'POST'])
 def newItem():
     if 'username' not in login_session:
-        flash_message("You must be logged in to create a new item , please login above")
+        flash_message(
+            "You must be logged in to create a new item , please login above")
         return redirect(url_for('loginPage'))
     if request.method == 'POST':
-        corresponding_category = session.query(Category).filter_by(name=request.form['category_select']).one()
+        corresponding_category = session.query(Category).filter_by(
+            name=request.form['category_select']).one()
         newItem = CategoryItem(name=request.form['name'], description=request.form['description'],
-                     category=corresponding_category,user_id=login_session['user_id'])
+                               category=corresponding_category, user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
         return redirect(url_for('catalog'))
     else:
         categories = session.query(Category).order_by(asc(Category.name))
-        return render_template('newItem.html',categories=categories)
+        return render_template('newItem.html', categories=categories)
 
 # Edit existing item
+
+
 @app.route('/catalog/edititem/<int:item_id>', methods=['GET', 'POST'])
 def editItem(item_id):
 
     currentItem = session.query(CategoryItem).filter_by(id=item_id).one()
     if 'username' not in login_session:
-        flash_message("You must be logged in to create edit this item , please login")
+        flash_message(
+            "You must be logged in to create edit this item , please login")
         return redirect(url_for('loginPage'))
-    elif login_session['user_id'] != currentItem.user_id :
-        flash_message("You don't have permissions to edit this item, please login using correct credentials")
+    elif login_session['user_id'] != currentItem.user_id:
+        flash_message(
+            "You don't have permissions to edit this item, please login using correct credentials")
         return redirect(url_for('loginPage'))
     else:
         if request.method == 'POST':
             currentItem.name = request.form['name']
             currentItem.description = request.form['description']
-            currentItem.category = session.query(Category).filter_by(name=request.form['category_select']).one()
+            currentItem.category = session.query(Category).filter_by(
+                name=request.form['category_select']).one()
             session.add(currentItem)
             session.commit()
             return redirect(url_for('catalog'))
         else:
             categories = session.query(Category).order_by(asc(Category.name))
-            return render_template('editItem.html',categories=categories,item=currentItem)
+            return render_template('editItem.html', categories=categories, item=currentItem)
 # Delete item
+
+
 @app.route('/catalog/deleteitem/<int:item_id>', methods=['GET'])
 def deleteItem(item_id):
     print "Login session"
-    print  login_session
+    print login_session
     item = session.query(CategoryItem).filter_by(id=item_id).one()
     print "The item is %s" % str(vars(item))
     if 'username' not in login_session:
-        flash_message("You must be logged in to create edit this item , please login")
+        flash_message(
+            "You must be logged in to create edit this item , please login")
         return redirect(url_for('loginPage'))
-    elif login_session['user_id'] != item.user_id :
-        flash_message("You don't have permissions to edit this item, please login using correct credentials")
+    elif login_session['user_id'] != item.user_id:
+        flash_message(
+            "You don't have permissions to edit this item, please login using correct credentials")
         return redirect(url_for('loginPage'))
     else:
         session.delete(item)
@@ -145,18 +177,24 @@ def deleteItem(item_id):
         return redirect(url_for('catalog'))
 
 # Show details about particular item
+
+
 @app.route('/catalog/showitem/<int:item_id>', methods=['GET'])
 def showItem(item_id):
-        currentItem = session.query(CategoryItem).filter_by(id=item_id).one()
-        return render_template('showItem.html',item=currentItem)
+    currentItem = session.query(CategoryItem).filter_by(id=item_id).one()
+    return render_template('showItem.html', item=currentItem)
 
 # Show details about particular item in JSON
+
+
 @app.route('/catalog/showitem/<int:item_id>/JSON', methods=['GET'])
 def showItemJSON(item_id):
-        currentItem = session.query(CategoryItem).filter_by(id=item_id).one()
-        return jsonify(item=currentItem.serialize)
+    currentItem = session.query(CategoryItem).filter_by(id=item_id).one()
+    return jsonify(item=currentItem.serialize)
 
 # Login via google . Add user to local DB if authentication is a success
+
+
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
 
@@ -251,7 +289,9 @@ def gconnect():
     print "done!"
     return output
 
-#Logout
+# Logout
+
+
 @app.route('/logout')
 def logout():
     # Only disconnect a connected user.
