@@ -154,6 +154,7 @@ def editItem(item_id):
         else:
             categories = session.query(Category).order_by(asc(Category.name))
             return render_template('editItem.html', categories=categories, item=currentItem)
+
 # Delete item
 
 
